@@ -6,9 +6,20 @@ Date.prototype.addDays = function(days) {
 
 function doGet(e) 
 {
+  try {
+  } catch(e) {
+    logException(e);
+  }
+  
+  
+  
+  
+  
+  
+  
   //return doGetForJQAppDemo(e);
   
-  return doGetForCalendarPage(e);
+  //return doGetForCalendarPage(e);
   
   //return doGetForNavigation(e);
   
