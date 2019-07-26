@@ -1,0 +1,21 @@
+<script>
+function startProgress() 
+{
+    $.mobile.loading( "show", {
+            text: "Töltődik",
+            textVisible: false,
+            theme: $.mobile.loader.prototype.options.theme,
+            textonly: false,
+            html: ""
+    });
+}
+function endProgress()
+{
+	$.mobile.loading("hide");
+}
+function onFailure(error)
+{
+	endProgress();
+	alert(error.message);
+}
+</script>
