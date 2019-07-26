@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+    <script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/jquery.validation/1.15.1/jquery.validate.min.js"></script>
+    <style>
+    form .error {
+        color: #ff0000;
+    }
+    </style>
+    <script>
+    
+    </script>
+    <script>
+      // modified from https://developers.google.com/apps-script/guides/html/communication#forms
+      // Prevent forms from submitting.
+      function preventFormSubmit() {
+        var forms = document.querySelectorAll('form');
+        for (var i = 0; i < forms.length; i++) {
+          forms[i].addEventListener('submit', function(event) {
+            event.preventDefault();
+          });
+        }
+      }
+      window.addEventListener('load', preventFormSubmit);
+      
+      $(document).on('pageinit', '[data-role="page"]', function(){    
+              // Initialize form validation on the registration form.
+  // It has the name attribute "registration"
+  $("form[name='registration']").validate({
+    // Specify validation rules
+    rules: {
+      // The key name on the left side is the name attribute
+      // of an input field. Validation rules are defined
+      // on the right side
+      locationid: "required",
+      name: "required",
+      email: {
+        required: true,
+        // Specify that email should be validated
+        // by the built-in "email" rule
+        email: true
+      }
+    },
+    // Specify validation error messages
+    messages: {
+      locationid: "Please enter your locationid",
+      name: "Please enter your name",
+      email: "Please enter a valid email address"
+    },
+    // Make sure the form is submitted to the destination defined
+    // in the "action" attribute of the form when valid
+    submitHandler: function(form) {
+      form.submit();
+      alert('submit2');
+    }
+  });
+      });
+
+      function handleFormSubmit(formObject) {
+        //google.script.run.withSuccessHandler(updateUrl).processForm(formObject);
+        alert('submit');
+      }
+      function updateUrl(url) {
+        var div = document.getElementById('output');
+        console.log(url);
+        div.innerHTML =  url;
+      }
+    </script>
+  </head>
+  <body>
+  <div class="error">
+<img src="images/warning.gif" alt="Warning!" width="24" height="24" style="float:left; margin: -5px 10px 0px 0px;">
+<span></span>.
+<br clear="all">
+</div>
+    <form id="myForm" onsubmit="handleFormSubmit(this)" name="registration" style="padding:10px">
+        <fieldset class="pure-group">
+          <label for="locationid">Location Id: </label>
+          <input id="locationid" name="locationid" type="number" value="<?!= data[0]['LocationId'] ?>"/>
+        </fieldset>
+    
+        <fieldset class="pure-group">
+          <label for="name">Site name: </label>
+          <input id="name" name="name" value="<?!= data[0]['Site Name'] ?>"/>
+        </fieldset>
+    
+        <fieldset class="pure-group">
+          <label for="reading">Reading: </label>
+          <input id="reading" name="reading" type="number" value="<?!= data[0]['Reading'] ?>"/>
+        </fieldset>
+    
+        <fieldset class="pure-group">
+          <label for="email">Your Email:</label>
+          <input id="email" name="email" type="email" value="<?!= data.engineer ?>"/>
+        </fieldset>
+        
+        <button id="cam-button" data-icon="camera">Photo</button>
+        <input name="myPhoto" style="display:none" type="file" accept="image/*;capture=camera"/>
+        <input type="submit" value="Submit" />
+    </form>
+    <div style="text-align:center" id="output"></div>
+    <script>
+    (function( $ ) {
+      $("#cam-button").click(function () {
+        $("input[type='file']").trigger('click');
+      });
+      
+    })( jQuery );
+    </script>
+ </body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.css">
+  </head>
+  <body>
+  
+    <!-- calendar page -->
+<div data-role="page" id="calendar-page">
+    <div data-role="header">
+        <button class="ui-btn-left  ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-right ui-icon-arrow-l" onclick="prevWeek()">&nbsp;</button>
+        <h1 id="week-label"><?= weekLabel ?></h1>
+        <button class="ui-btn-right ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-right ui-icon-arrow-r" onclick="nextWeek()">&nbsp;</button>
+        <input id="hidden-calendar-week" value="<?= hiddenWeekOffsetFromToday ?>">
+    </div>
+    
+    <div data-role="tabs" id="tabs">
+		<div data-role="navbar">
+			<ul>
+				<li><a href="#CalDay1" data-ajax="false">Hétfő</a></li>
+				<li><a href="#CalDay2" data-ajax="false">Kedd</a></li>
+				<li><a href="#CalDay3" data-ajax="false">Szerda</a></li>
+				<li><a href="#CalDay4" data-ajax="false">Csütörtök</a></li>
+				<li><a href="#CalDay5" data-ajax="false">Péntek</a></li>
+			</ul>
+		</div>
+		<div id="CalDay1">
+			<ul data-role="listview" data-inset="true" id="DayList1">
+                <li>Hétfő</li>
+			</ul>
+		</div>
+		<div id="CalDay2">
+			<ul data-role="listview" data-inset="true" id="DayList2">
+                <li>Kedd</li>            
+			</ul>
+		</div>
+		<div id="CalDay3">
+			<ul data-role="listview" data-inset="true" id="DayList3">
+                <li>Szerda</li>            
+			</ul>
+		</div>
+		<div id="CalDay4">
+			<ul data-role="listview" data-inset="true" id="DayList4">
+                <li>Csütörtök</li>            
+			</ul>
+		</div>
+		<div id="CalDay5">
+			<ul data-role="listview" data-inset="true" id="DayList5">
+                <li>Péntek</li>          
+			</ul>
+		</div>
+	</div>
+</div>
+
+<script>
+function prevWeek()
+{
+    var week = document.getElementById('hidden-calendar-week').value;
+    if (week > 0) {
+        buildNewWeek(week - 1);
+    }
+    
+}
+function nextWeek()
+{
+    var week = document.getElementById('hidden-calendar-week').value;
+    if (week < 9) {
+        buildNewWeek(Number(week) + 1);
+    }
+    
+}
+
+function buildNewWeek(newWeek)
+{
+$.mobile.loading( "show", {
+            text: "Töltődik",
+            textVisible: true,
+            theme: $.mobile.loader.prototype.options.theme,
+            textonly: false,
+            html: ""
+    });
+
+    google.script.run
+    .withSuccessHandler(function(json) {
+        displayNewWeek(json);
+    })
+    .withFailureHandler(onFailure)
+    .buildNewWeek(newWeek);
+}
+
+function displayNewWeek(json)
+{
+    $("#week-label").text(json.weekLabel);
+    $("#hidden-calendar-week").val(json.hiddenWeekOffsetFromToday);
+    $.mobile.loading( "hide" );
+}
+
+function onFailure(error)
+{
+	alert(error.message);
+    $.mobile.loading( "hide" );
+}
+</script>
+
+
+  </body>
+</html>
+
+
