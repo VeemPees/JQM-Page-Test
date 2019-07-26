@@ -14,13 +14,28 @@ function doGet(e)
     } else {
       Logger.log("Normal mode");
     }
-
+    
     /* what to do
     **
     ** The action can be one of these: 'fetch', 'fetchWeek'
     **
     */    
-    var op = e.parameter.action;
+    var op;
+    
+    if (e === undefined) {
+        // e was not passed
+      op = null;
+    } else {
+      if (e.parameter === undefined) {
+        op = null;
+      } else {
+        if (e.parameter.action === undefined) {
+          op = null;
+        } else {
+          op = e.parameter.action;
+        }
+      }
+    }
     
     if (op) {
       
