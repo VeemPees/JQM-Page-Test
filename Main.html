@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
+    <base target="_top">
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.js"></script>
 		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jquerymobile/1.4.5/jquery.mobile.min.css">
@@ -11,13 +12,103 @@
         }
     </style>
     <script>
-			
+var script_url = <?= scriptUrl ?>;			
 </script>
 <?!= include('GlobalJS'); ?>
 </head>
 	<body>
-    	<?!= include('Page1'); ?>
-        <br/>
-        Szia
+    <!-- list page -->
+<div align="center" data-role="page" id="service-list-page">
+    <div data-role="header">
+         <h1><image id="logo" /></h1>
+    </div>
+	<div role="main" class="ui-content">
+		<div id="loader">
+        </div>
+		<ul data-role="listview" id="service-list" data-divider-theme="a" data-inset="true">
+		</ul>
+		<a href="<?= ScriptApp.getService().getUrl() ?>?action=op1">Go</a>
+	</div>
+</div>
+
+<script>
+function buildServiceTable()
+{
+	startProgress();
+    
+	google.script.run
+		.withSuccessHandler(function(json) {
+			displayServices(json);
+		})
+		.withFailureHandler(onFailure)
+		.fetchServices();
+}
+
+function displayServices(json)
+{
+	$("#service-list").css("visibility", "visible");
+    
+    //set up string for adding <li/>
+    var li = "";
+    //container for $li to be added
+    $.each(json.Services, function (i, service) {
+        //add the <li> to "li" variable
+        //note the use of += in the variable
+        //meaning I'm adding to the existing data. not replacing it.
+        //store index value in array as id of the <a> tag
+        //li += '<li><a href="#" id="' + i + '" class="info-go">' + service.name + '</a></li>';
+        li += '<li><a href="' + script_url + ' id="' + i + '" class="info-go">' + service.name + '</a></li>';
+    });
+    //append list to ul
+    $("#service-list").append(li).promise().done(function () {
+        //wait for append to finish - thats why you use a promise()
+        //done() will run after append is done
+        //add the click event for the redirection to happen to #service-details-page
+        $(this).on("click", ".info-go", function (e) {
+            //e.preventDefault();
+            //store the information in the next page's data
+            $("#service-details-page").data("service", json.Services[this.id]);
+            
+//            service.id
+//            service.category
+//            service.name
+//            service.price
+//            service.duration
+//            service.details
+            
+            //change the page # to second page. 
+            //Now the URL in the address bar will read index.html#service-details-page
+            //where #service-details-page is the "id" of the second page
+            //we're gonna redirect to that now using changePage() method
+            
+            //$.mobile.changePage("script.google.com/macros/s/AKfycbxoQz9on7937GhY8AsVImgjd37tSTRlwrZhhmcTzWEA/dev?op=a");
+            //$.mobile.changePage("google.com");
+            //$.mobile.changePage("https://script.google.com/macros/s/AKfycbxoQz9on7937GhY8AsVImgjd37tSTRlwrZhhmcTzWEA/dev?op=a");
+            
+            //var e = {};
+            //var p = {};
+            //p.action = "dummy";
+            //e.parameter = p;
+            //google.script.run.doGet(e);
+            
+            //alert(script_url);
+            
+            //$.mobile.changePage("script.google.com/macros/s/AKfycbxoQz9on7937GhY8AsVImgjd37tSTRlwrZhhmcTzWEA/dev");
+            //
+            
+            
+            //window.location.href = script_url;
+        });
+        //refresh list to enhance its styling.
+        $(this).listview("refresh");
+    });
+    
+    endProgress();
+}
+$(document).on('pageinit', '#service-list-page', function(){       
+    buildServiceTable();
+});
+
+</script>
 	</body>
 </html>

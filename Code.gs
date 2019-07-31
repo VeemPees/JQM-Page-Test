@@ -1,20 +1,10 @@
+// Use the Log tab of the reservation sheet (1muq45nBd9l0oRF5d4iF3eObVkNIZcukc5kfne06fFd0) to capture logs
+Logger = BetterLog.useSpreadsheet('1muq45nBd9l0oRF5d4iF3eObVkNIZcukc5kfne06fFd0');
+
 function doGet(e) 
 {
   try {
 
-    /*
-    **
-    ** Developer mode has a different script ID and URL than the normal one
-    ** 
-    */
-    var _developerMode_ = true;
-    
-    if (_developerMode_) {
-      Logger.log("Developer mode");
-    } else {
-      Logger.log("Normal mode");
-    }
-    
     /* what to do
     **
     ** The action can be one of these: 'fetch', 'fetchWeek'
@@ -44,9 +34,7 @@ function doGet(e)
       
       if (op == 'op1') {
         
-        ds = fetchServices();
-        
-        Logger.log("DataSet built");
+        return HtmlService.createHtmlOutput("Hello");
         
       }
       
@@ -73,28 +61,14 @@ function doGet(e)
     
       var template = HtmlService.createTemplateFromFile("Main");
       
-      var propScriptID = "";
-      var scriptUrl = "";
+      Logger.log("Main");
       
-      if (_developerMode_) {
-        
-        //In develope mode there is a different URL and script ID
-        
-        propScriptID = PropertiesService.getScriptProperties().getProperty("propDevScriptID");
-        scriptUrl = "https://script.google.com/macros/s/" + propScriptID + "/dev";
-      } else {
-        
-        //In normale mode there is a different URL and script ID
-        
-        propScriptID = PropertiesService.getScriptProperties().getProperty("propLiveScriptID");
-        scriptUrl = "https://script.google.com/macros/s/" + propScriptID + "/exec";
-      }
-      template.developerMode = _developerMode_;
-      template.scriptUrl = scriptUrl;
+      template.scriptUrl = ScriptApp.getService().getUrl() + "?action=op1";
       
       var html = template.evaluate()
         .addMetaTag('viewport', 'width=device-width, initial-scale=1')
         .setTitle('Időpont foglalás');
+      Logger.log("template.evaluate");
       return html;
     }
     
